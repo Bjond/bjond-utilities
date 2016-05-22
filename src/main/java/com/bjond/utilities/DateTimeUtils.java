@@ -26,8 +26,7 @@ import org.apache.commons.lang3.time.DateUtils;
 
  *
  * <a href="mailto:Stephen.Agneta@bjondinc.com">Steve 'Crash' Agneta</a>
- * @author
- * @version
+ * @author Stephen 'Crash' Agneta
  *
  */
 
@@ -36,8 +35,8 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 11:59:59.999 PM of date.
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object.
+	 * @return New date. Original is not altered.
 	 */
     public static Date getEndOfDay(final Date date) {
         return DateUtils.addMilliseconds(DateUtils.ceiling(date, Calendar.DATE), -1);
@@ -46,39 +45,39 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 00:01:01.000 in the morning of Date.
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static Date getStartOfDay(final Date date) {
         return DateUtils.truncate(date, Calendar.DATE);
     }
 
 	/**
-	 * Returns true of now > date
+	 * Returns true if now greater than date
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static boolean isNowAfter(final Date date){
         return (date != null && System.currentTimeMillis() > date.getTime());
     }
 
 	/**
-	 * Returns true if now >= date
+	 * Returns true if NOW greater than or equal to date
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static boolean isNowEqualToOrGreaterThan(final Date date){
         return (date != null && System.currentTimeMillis() >= date.getTime());
     }
 
 	/**
-	 * return true if firstDate >= secondDate
+	 * return true if firstDate greater than or equal to secondDate
 	 *
-	 * @param firstDate
-	 * @param secondDate
-	 * @return
+	 * @param firstDate Valid non-null java.util.Date object
+	 * @param secondDate Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static boolean isEqualToOrGreaterThan(final Date firstDate, final Date secondDate){
         return (firstDate != null && secondDate != null && firstDate.getTime() >= secondDate.getTime());
@@ -87,8 +86,8 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 11:59:59.999 PM tomorrow of date.
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static Date tomorrow(final Date date) {
         return getEndOfDay(DateUtils.addDays(date, 1));
@@ -97,8 +96,8 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 00:01:01.000 yesterday.
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static Date yesterday(final Date date) {
         return getStartOfDay(DateUtils.addDays(date, -1));
@@ -108,8 +107,8 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 11:59:59.999 PM today of date.
 	 *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static Date today(final Date date) {
         return getEndOfDay(date);
@@ -119,8 +118,7 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 11:59:59.999 PM tomorrow.
 	 *
-	 * @param date
-	 * @return
+	 * @return New date. Original is not altered.
 	 */
     public static Date tomorrow() {
         return getEndOfDay(DateUtils.addDays(new Date(), 1));
@@ -130,19 +128,17 @@ final public class DateTimeUtils {
 	/**
 	 * Returns 00:01:01.000 yesterday.
 	 *
-	 * @param date
-	 * @return
+	 * @return New date. Original is not altered.
 	 */
     public static Date yesterday() {
         return getStartOfDay(DateUtils.addDays(new Date(), -1));
     } 
 
 
-    /**
+	/**
 	 * Returns 11:59:59.999 PM today.
 	 *
-	 * @param date
-	 * @return
+	 * @return New date. Original is not altered.
 	 */
     public static Date today() {
         return getEndOfDay(new Date());
@@ -155,8 +151,8 @@ final public class DateTimeUtils {
 	 * 
      * NOTE: if date is null then null is returned.
      *
-	 * @param date
-	 * @return
+	 * @param date Valid non-null java.util.Date object
+	 * @return New date. Original is not altered.
 	 */
     public static Date clone(final Date date) {
         return (null != date) ? (Date)date.clone() : null;

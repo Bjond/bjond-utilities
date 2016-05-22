@@ -1,3 +1,17 @@
+/*  Copyright (c) 2016
+ *  by Bjönd, Inc., Boston, MA
+ *
+ *  This software is furnished under a license and may be used only in
+ *  accordance with the terms of such license.  This software may not be
+ *  provided or otherwise made available to any other party.  No title to
+ *  nor ownership of the software is hereby transferred.
+ *
+ *  This software is the intellectual property of Bjönd, Inc.,
+ *  and is protected by the copyright laws of the United States of America.
+ *  All rights reserved internationally.
+ *
+ */
+
 package com.bjond.utilities;
 
 import lombok.val;
@@ -94,26 +108,33 @@ public class JodaTimeUtils {
         return t.isBefore(rangeStart) || t.isAfter(rangeEnd);
     }
     
-    /**
-     * Note: all time zone must be UTC.
-     * 
-     * @param now
-     * @param valueUnitPairs Length must be even number.  Non-empty.  E.g., [ 180, TimeUnit.SECONDS, 90, TimeUnit.DAYS ]    
-     * @return
-     */
+	/**
+	 * Note: all time zone must be UTC.
+	 *
+	 * @param t DateTime object
+	 * @param now DateTime object of time NOW
+	 * @param valueUnitPairs
+	 *            Length must be even number. Non-empty. E.g., [ 180,
+	 *            TimeUnit.SECONDS, 90, TimeUnit.DAYS ]
+	 * @return returns true if after time span ago.
+	 * @throws Exception if comparison fails.
+	 */
     public static boolean afterTimeSpanAgo(DateTime t, DateTime now, int ... valueUnitPairs) throws Exception {
         val ago = ago(now, valueUnitPairs);
         return t.isEqual(ago) || t.isAfter(ago);
     }
     
-    /**
-     * Note: all time zone must be UTC.
-     * 
-     * @param now
-     * @param valueUnitPairs Length must be even number.  Non-empty.  E.g., [ 180, TimeUnit.SECONDS, 90, TimeUnit.DAYS ]    
-     * @return
-     * @throws Exception 
-     */
+	/**
+	 * Note: all time zone must be UTC.
+	 *
+	 * @param t DateTime object
+	 * @param now DateTime object of now
+	 * @param valueUnitPairs
+	 *            Length must be even number. Non-empty. E.g., [ 180,
+	 *            TimeUnit.SECONDS, 90, TimeUnit.DAYS ]
+	 * @return true if before time span ago
+	 * @throws Exception if comparison fails.
+	 */
     public static boolean beforeTimeSpanAgo(DateTime t, DateTime now, int ... valueUnitPairs) throws Exception {
         val ago = ago(now, valueUnitPairs);
         return t.isBefore(ago);

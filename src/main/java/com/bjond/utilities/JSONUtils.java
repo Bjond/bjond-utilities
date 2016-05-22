@@ -103,15 +103,15 @@ public class JSONUtils {
 	}
 	
 	/**
-	 *  <code>fromJSON</code> method will accept a JSON string and Class template
-	 *  and will deserialize the JSON to that Class. 
+	 * <code>fromJSON</code> method will accept a JSON string and Class template
+	 * and will deserialize the JSON to that Class.
 	 *
 	 * NOTE: Written for perfomance thus NULL checks are not performed.
 	 *
-	 * @param json a <code>String</code> value
-	 * @param c a <code>Class<T></code> value
+	 * @param json
+	 * @param c
 	 * @return a <code><T></code> value
-	 * @exception IOException if an error occurs
+	 * @throws IOException IO operation failure.
 	 */
 	public static <T> T fromJSON(final String json, final Class<T> c) throws IOException {
 	    return constructJackson().readValue(json, c);
