@@ -26,7 +26,7 @@ $ gradle test
 
 ## Publish Maven locally for testing
 
-This will generate the default Maven POM file within ./build/publications/maven/pom-default.xml
+This will generate the default Maven POM file within ./build/publications/maven/bjond-utilities.pom
 
 ```shell
 $ gradle publishToMavenLocal
