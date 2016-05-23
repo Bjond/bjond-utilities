@@ -151,7 +151,7 @@ publishing {
             groupId 'org.bjond.utilities'
             artifactId 'bjond-utilities'
             version '1.0'
-
+            
             from components.java
         }
     }
