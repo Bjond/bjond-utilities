@@ -103,15 +103,19 @@ public class JSONUtils {
 	}
 	
 	/**
-	 * <code>fromJSON</code> method will accept a JSON string and Class template
+	 * fromJSON method will accept a JSON string and Class template
 	 * and will deserialize the JSON to that Class.
 	 *
 	 * NOTE: Written for perfomance thus NULL checks are not performed.
-	 *
+     *
+	 * @param <T> Type of the class object.	 *
 	 * @param json
+	 *            A valid JSON document.
 	 * @param c
-	 * @return a <code><T></code> value
-	 * @throws IOException IO operation failure.
+	 *            The class that matches the JSON document.
+	 * @return an object of class c
+	 * @throws IOException
+	 *             IO operation failure.
 	 */
 	public static <T> T fromJSON(final String json, final Class<T> c) throws IOException {
 	    return constructJackson().readValue(json, c);
@@ -122,25 +126,30 @@ public class JSONUtils {
 	}
 
 	/**
-	 *  <code>constructJackson</code> method will return the JaxRS ObjectMapper.
-	 *  It is confiured to NOT fail on unknown properties as it gets mighty confused around empty List<T> 
-	 *  types in hibernate beans.
+	 * constructJackson method will return the JaxRS ObjectMapper.
+	 * It is configured to NOT fail on unknown properties as it gets mighty
+	 * confused around empty List generic types in hibernate beans.
 	 *
-	 * @return an <code>ObjectMapper</code> value
+	 * @return an ObjectMapper value
 	 */
 	public static @NotNull(message="return must not be null.") ObjectMapper constructJackson() {
 	    return mapper;
 	}
 
 	/**
-	 * Will clone Object obj of class type 'c' by washing it through the 
-     * JSON serialization engine.
+	 * Will clone Object obj of class type 'c' by washing it through the JSON
+	 * serialization engine.
 	 *
+	 * @param <T> Type of the class object.
 	 * @param obj
+	 *            Any object
 	 * @param c
-	 * @return
+	 *            The class of the object
+	 * @return Returns a type of that object cloned using JSON to marshall the
+	 *         values.
 	 *
 	 * @throws IOException
+	 *             Tossed if JSON marshalling fails.
 	 */
     public static <T> T clone(final Object obj, final Class<T> c) throws IOException {
         return fromJSON(toJSON(obj), c);
@@ -151,9 +160,9 @@ public class JSONUtils {
      * 
      * Clearly this needs to be a simple bean class with no logic.
      * 
-     * @param clazz
+     * @param clazz is the class for which a JSON schema shoudl be generated.
      * @return The JSON Schema.
-     * @throws IOException
+     * @throws IOException If the clazz cannot be marshalled for any reason.
      */
     public static String getJsonSchema(@SuppressWarnings("rawtypes") Class clazz) throws IOException {
         ObjectMapper mapper = new BjondMapper();

@@ -24,16 +24,18 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.lambda.Unchecked;
 
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
@@ -129,14 +131,14 @@ final public class MiscUtils {
      * The syntax of Java never makes this syntax easy. This is the best I can accomplish.
      *
      * example usage: 
-            Collection<User> users = identityService.getAllMembers(group);
-            Users[] userArray = MiscUtils.<User>toArray(users, User.class)
+            Collection&lt;User&gt; users = identityService.getAllMembers(group);
+            Users[] userArray = MiscUtils.&lt;User&gt;toArray(users, User.class)
      * 
      *
-     * @param collection <code>java.util.Collection<T></code> value
-     * @param c <code>Class<T></code> value
+     * @param <T> Type of class c returned.
+     * @param collection <code>java.util.Collection&lt;T&gt;</code> value
+     * @param c <code>Class&lt;T&gt;</code> value
      * @return T <code>T[]</code> value
-     * @exception Exception if an error occurs
      */
 
     @SuppressWarnings("unchecked")
@@ -187,7 +189,7 @@ final public class MiscUtils {
      * are all considered to be production.
      * 
      * @param env Usually the return value of <code>System.getenv()</code>.
-     * @return
+     * @return TRUE if system running in production mode and false otherwise.
      */
     public static boolean isProductionMode(Map<String, String> env) {
     	final String key = "BJOND_RUNTIME_MODE";
@@ -215,7 +217,7 @@ final public class MiscUtils {
      *  running beneath the Arquillian System testing framework. Some system components don't
      *  work in some configurations, for various reasons, with Arquillian thus we need to know.
      *
-     * @return a <code>boolean</code> value
+     * @return a <code>boolean</code> value TRUE if system is running under Arquillian integration test framework.
      */
     
     public static boolean isRunningUnderArquillian() {
@@ -228,7 +230,7 @@ final public class MiscUtils {
 	 * @param myClass Class associated with the resource (resource just have to in the same package as this class, I think).
 	 * @param resourceName filename of the resource.
 	 * @return Content of the file read in string.
-	 * @throws IOException
+	 * @throws IOException If any IO error occurs reading contents from Resource. Such as the resource not found.
 	 */
 	public static String readContentsFromResource(@SuppressWarnings("rawtypes") Class myClass, String resourceName) throws IOException {
 		val rsc = myClass.getResource(resourceName);
@@ -241,8 +243,7 @@ final public class MiscUtils {
 	/**
 	 * Get a MessageDigest based on the algorithm passed.
 	 * 
-	 * @param algorithm
-	 * @return
+	 * @return the MessageDigest that conforms to MD5 hash.
 	 */
 	public static MessageDigest getMD5() {
     	MessageDigest digest = null;
@@ -259,8 +260,12 @@ final public class MiscUtils {
 	 * Meant to work like angular.extend():
 	 * 
 	 * https://docs.angularjs.org/api/ng/function/angular.extend
+	 * @param o1 destination object
+	 * @param o2 source object
+	 * @return returns the 01
+	 * @throws Exception if introspection fails.
 	 */
-	public static Object extend(Object o1, Object o2) throws Exception {
+	public static Object extend(final Object o1, final Object o2) throws Exception {
 		
 		if (o2 != null) { 
 			val o2Properties = getNonNullProperties(o2);
@@ -274,6 +279,10 @@ final public class MiscUtils {
 	 * Meant to work like angular.extend():
 	 * 
 	 * https://docs.angularjs.org/api/ng/function/angular.extend
+	 * @param o1 destination
+	 * @param objs source
+	 * @return 01 object
+	 * @throws Exception Any introspection failures tossed here.
 	 */
 	public static Object extend(Object o1, Object ... objs) throws Exception {
 		
@@ -285,48 +294,41 @@ final public class MiscUtils {
 	}
 	
 	/**
-	 * @param o 
-	 * @return
-	 * @throws Exception
+     * Returns a set of all null properties 
+     *
+	 * @param o the source object
+	 * @return the Set of null properties
+	 * @throws Exception on introspection errors.
 	 */
-	public static Set<String> getNullProperties(Object o) throws Exception {
-		val set = new HashSet<String>();
-		val properties = getProperties(o);
-		
-		for (String key : properties) {
-			val v = getPropertyValue(o, key);
-			if (v == null) {
-				set.add(key);
-			}
-		}
-		
-		return set;
+	public static Set<String> getNullProperties(final Object o) throws Exception {
+        return getProperties(o).stream()
+            .filter(Unchecked.predicate(k -> getPropertyValue(o, k) == null))
+            .collect(Collectors.toSet());
 	}
 	
 	/**
+     * Returns the Map of non null properties 
+     *
 	 * @param o A bean with get and set methods for its properties.
 	 * @return Map of property name to its value
-	 * @throws Exception
+	 * @throws Exception on introspection errors.
 	 */
-	public static Map<String, Object> getNonNullProperties(Object o) throws Exception {
-		val map = new HashMap<String, Object>();
-		val properties = getProperties(o); 
-		
-		for (String key : properties) {
-			val v = getPropertyValue(o, key);
-			if (v != null) {
-				map.put(key, v);
-			}
-		}
-		
-		return map;
+	public static Map<String, Object> getNonNullProperties(final Object o) throws Exception {
+        return getProperties(o).stream()
+            .filter(Unchecked.predicate(k -> getPropertyValue(o, k) != null))
+            .collect(Collectors.toMap(Function.identity(), Unchecked.function(k-> getPropertyValue(o,k))));
 	}
 
-    /*
+    /**
      * Function below courtesy of: 
      *    * http://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places 
-     */
-    public static double round(double value, int places) {
+	 * 
+	 * 
+	 * @param value value to round.
+	 * @param places places
+	 * @return the rounded double. 
+	 */
+    public static double round(final double value, final int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
@@ -358,7 +360,7 @@ final public class MiscUtils {
 	 * Encapsulates value in double quotes "value". 
      * Useful for cypher properties.
 	 *
-	 * @param value
+	 * @param value the value to quote.
 	 * @return escaped String
 	 */
     static public String doubleQuote(final String value){
@@ -369,8 +371,8 @@ final public class MiscUtils {
 	 * Will escape every single and double quote within string s 
      * such that the string is Drools compatable
 	 *
-	 * @param s
-	 * @return
+	 * @param s the string to escape.
+	 * @return the escaped string
 	 */
     static public String escapeSingleAndDoubleQuotes(final String s) {
         return s.replace("\"", "\\\"").replace("'", "\\'");

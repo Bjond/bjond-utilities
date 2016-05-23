@@ -79,9 +79,10 @@ public class XMLUtils {
 	 *
 	 * NOTE: Written for perfomance thus NULL checks are not performed.
 	 *
+	 * @param <T> type of class c. 
 	 * @param xml a <code>String</code> value
-	 * @param c a <code>Class<T></code> value
-	 * @return a <code><T></code> value
+	 * @param c a <code>Class&lt;T&gt;</code> value
+	 * @return a <code>&lt;T&gt;</code> value
 	 * @exception IOException if an error occurs
 	 */
 	public static <T> T fromXML(final String xml, final Class<T> c) throws IOException {
@@ -94,7 +95,7 @@ public class XMLUtils {
 
 	/**
 	 *  <code>constructJackson</code> method will return the JaxRS XmlMapper.
-	 *  It is configured to NOT fail on unknown properties as it gets mighty confused around empty List<T> 
+	 *  It is configured to NOT fail on unknown properties as it gets mighty confused around empty List&lt;T&gt; 
 	 *  types in hibernate beans.
 	 *
 	 * @return an <code>XmlMapper</code> value

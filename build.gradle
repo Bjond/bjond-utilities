@@ -54,6 +54,12 @@ dependencies {
     compile 'org.jboss.resteasy:resteasy-client:3.0.11.Final'
     compile group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.0.11.Final'
 
+
+    // http://www.jooq.org/
+    // http://blog.jooq.org/2014/03/07/java-8-friday-goodies-sql-resultset-streams/
+    compile 'org.jooq:jooq:3.6.1'
+    compile 'org.jooq:jool:0.9.6'
+
     
     compile 'junit:junit:4.12'
 

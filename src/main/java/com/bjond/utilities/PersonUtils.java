@@ -37,7 +37,7 @@ public class PersonUtils {
         /**
 		 *  Return TRUE if there are no changes within the diff.
 		 * 
-		 * @return
+		 * @return true if the Diff is empty. No intersection.
 		 */
         public boolean isEmpty() { return added.isEmpty() && removed.isEmpty();}
 	}

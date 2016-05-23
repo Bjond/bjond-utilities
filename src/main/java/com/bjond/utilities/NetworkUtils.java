@@ -86,11 +86,12 @@ public class NetworkUtils {
 	 * safeExtract will return type T if the response contains T or a JSON String representation of T.
      * NULL values are not handled and will toss a RuntimeException. Be warned. Not goof proof.
 	 *
-	 * @param response
-	 * @param c
-	 * @return
+     * @param <T> is the type of class c.
+	 * @param response the JaxRW response.
+	 * @param c The class of type T to return.
+	 * @return The returned class of type T
 	 *
-	 * @throws IOException
+	 * @throws IOException if JSON marshalling fails.
 	 */
     @SuppressWarnings("unchecked")
     public static <T> T safeExtract(final Response response, final Class<T> c) throws IOException {
@@ -101,9 +102,9 @@ public class NetworkUtils {
 	/**
 	 * Returns true if hostname:port is accessible and false otherwise.
 	 * 
-	 * @param hostname
-	 * @param port
-	 * @return
+	 * @param hostname the hostname to check.
+	 * @param port the port at hostname to check.
+	 * @return true if hostname:port is available.
 	 */
 	@SuppressWarnings("try")
 	public static boolean hostAvailabilityCheck(final String hostname, final int port) {
