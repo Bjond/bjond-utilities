@@ -150,7 +150,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'org.bjond.utilities'
             artifactId 'bjond-utilities'
-            version '1.0.1'
+            version '1.0.2'
             
             from components.java
         }
