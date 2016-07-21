@@ -25,3 +25,4 @@ TAGS~
 /bin/
 build/**
 *.settings
+/build/
