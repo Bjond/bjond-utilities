@@ -14,6 +14,7 @@
 
 package com.bjond.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -86,6 +87,36 @@ public class TestUtils {
 		assertEquals(2, props.keySet().size());
 	}
 
+
+    @Test
+	public void test_normalizeToNaturalSortOrder() throws Exception {
+        final String resultString1 = "aa000000000000000000000000000000000000000000000000000000000000000000000000011bb000000000000000000000000000000000000000000000000000000000000000000000000022cc000000000000000000000000000000000000000000000000000000000000000000000000033ff";
+        final String resultString2 = "000000000000000000000000000000000000000000000000000000000000000000000000011aa000000000000000000000000000000000000000000000000000000000000000000000000022bb000000000000000000000000000000000000000000000000000000000000000000000000033cc000000000000000000000000000000000000000000000000000000000000000000000000044";
+        final String resultString3 = "000000000000000000000000000000000000000000000000000000000000000000000000111";
+        System.out.println("test_normalizeToNaturalSortOrder() invoked");
+
+        final String result = MiscUtils.normalizeToNaturalSortOrder("aa11bb22cc33ff");
+        //System.out.println("RESULT: " + result);
+        assertThat(result).isEqualTo(resultString1);
+
+        final String result2 = MiscUtils.normalizeToNaturalSortOrder("11aa22bb33cc44");
+        //System.out.println("RESULT: " + result2);
+        assertThat(result2).isEqualTo(resultString2);
+
+        final String result3 = MiscUtils.normalizeToNaturalSortOrder("111");
+        //System.out.println("RESULT: " + result3);
+        assertThat(result3).isEqualTo(resultString3);
+
+
+        final String result4 = MiscUtils.normalizeToNaturalSortOrder("now is the time for all good men");
+        //System.out.println("RESULT: " + result4);
+        assertThat(result4).isEqualTo("now is the time for all good men");
+
+        // Some more edge cases
+        assertThat(MiscUtils.normalizeToNaturalSortOrder("")).isNullOrEmpty();
+        assertThat(MiscUtils.normalizeToNaturalSortOrder(null)).isNullOrEmpty();
+
+    }    
 
 }
 

@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -69,9 +71,84 @@ final public class MiscUtils {
         // also external file-locking-based synchronizer if multiple JVMs run JUG
         // UUID uuid = uuidGenerator.generate();
     }
-    
-    // Accessors/Mutators
 
+
+    // Regular expression to extract all numerics precompiled for performance. Thread safe.
+    private final static Pattern numericPattern = Pattern.compile("\\d+");
+
+    /**
+	 * Given an original string this method will normalize all numerics held within
+     * that string (if any) to allow for Natural Sort Ordering.
+     *
+     *  https://en.wikipedia.org/wiki/Natural_sort_order
+     *
+     *  Algorithm:
+     *  Our approach basically matches a precompiled regular expression against 
+     *  a string and extracs all numeric substrings. This is standard and fast 
+     *  regex concept that actually has a special match character: \d+
+     *
+     *  For each numeric normailze it and construct a new string with the normalized
+     *  numeric in place of the original.
+     *  
+     *  Normalization in this instance is that each numeric contain the same number of
+     *  places: 75. Each numeric less than 75 will be prepended with zeros. 
+     *
+     *  This algorithm can also be thought of as a mapping in which a numeric is
+     *  mapped to another numeric that always contains 75 places.
+     *
+     *  Any numeric greater than 75 results in a bad order and a warning is emitted. 
+     *  Nothing can be done beyond increasing the normailation places. Highly unlikely.
+	 * 
+     *  Implementation Notes:
+     *  Emphasis on performance thus the code is a bit more complex than you would expect.
+     *  I could make it even more complex and more performant (theoretically) by reducing
+     *  temporary objects further but the resulting code would be exceedingly complex and 
+     *  error prone. A balancing of the two requirements of maintainability and performance
+     *  were considered.
+     * 
+	 * @param original
+	 * @return
+	 */
+    public static String normalizeToNaturalSortOrder(final String original) {
+        // Guard
+        if(StringUtils.isBlank(original)) { return "";}
+
+        // The normalized size of a numeric. 75 places
+        final int NORMALIZED = 75;
+
+        // Match on all numerics
+        final Matcher m = numericPattern.matcher(original);
+
+        // Flip through all numerics, if any, and normalize
+        final StringBuilder sb = new StringBuilder(500);
+        int index = 0; // Current location in string.
+        while(m.find()) {
+            final String numeric = original.substring(m.start(), m.end());
+
+            // First insert any previous characters.
+            sb.append(original.substring(index, m.start()));
+            index = m.end();
+
+            final int zeros = NORMALIZED - numeric.length();
+            if(zeros > 0){ // if length > NORMALIZED we blew the sort.
+                for(int i = 0; i < zeros; sb.append("0"), i++);
+            } else {
+                log.warn("Normalized numeric is greater than {} places. {}", NORMALIZED, original);
+            }
+            sb.append(numeric);
+        }
+
+        // Append anything non-numeric for the remainder of the string
+        // if any.
+        if(index < original.length()) {
+            sb.append(original.substring(index));
+        }
+        
+        return sb.toString();
+    }
+
+
+    
     /**
      *  <code>fromCamelCaseToLowerHyphen</code> method will convert
      *
