@@ -35,6 +35,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 
 /** <p> Contains all JSON related utilities and abstracts the
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
  *
  */
 
+@SuppressWarnings("deprecation")
 public class JSONUtils {
     private final static ObjectMapper mapper;
 
@@ -64,6 +66,9 @@ public class JSONUtils {
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
         mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
 
+        // Don't fail when a custom property filter can't be resolved.
+		SimpleFilterProvider filters = new SimpleFilterProvider().setFailOnUnknownId(false);
+		mapper.setFilters(filters); // Use the deprecated method here until we resolve Jackson version issues.
     }
 
 	/**
