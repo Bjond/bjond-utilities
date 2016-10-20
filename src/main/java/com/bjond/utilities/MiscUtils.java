@@ -163,6 +163,9 @@ final public class MiscUtils {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, in);
     }
 
+    public static int defaultIfNotNumeric(final String value, final int defaultValue) {
+        return (StringUtils.isNumeric(value)) ? Integer.parseInt(value) : defaultValue;
+    }
 
     /**
      *  <code>isNotNullOrBlank</code> method returns true if the string passed as an argument
