@@ -14,6 +14,7 @@
 
 package com.bjond.utilities;
 
+import javax.naming.InitialContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -147,6 +148,22 @@ final public class MiscUtils {
         return sb.toString();
     }
 
+    /**
+	 * Given a JNDI path to the T resource this method will return 
+     * a reference to the session bean or null if none found.
+	 * 
+	 * @param resource
+	 * @return
+	 */
+    @SuppressWarnings("unchecked")
+    public static <T> T obtainService(final String resource, Class<T> c) {
+		try {
+            return (T) new InitialContext().lookup(resource);
+		}
+		catch(final Exception e) {
+            return null;
+		}
+	}
 
     
     /**
