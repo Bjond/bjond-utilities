@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.val;
 
+import com.bjond.json.BjondPropertyFilter;
 import com.bjond.persistence.json.schema.BjondMapper;
 import com.bjond.persistence.json.schema.CustomBjondWrapper;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -171,6 +172,8 @@ public class JSONUtils {
      */
     public static String getJsonSchema(@SuppressWarnings("rawtypes") Class clazz) throws IOException {
         ObjectMapper mapper = new BjondMapper();
+        val filters = new SimpleFilterProvider().addFilter(BjondPropertyFilter.NAME, new BjondPropertyFilter());
+        mapper.setFilters(filters); 
         CustomBjondWrapper visitor = new CustomBjondWrapper(clazz);
         mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         mapper.acceptJsonFormatVisitor(clazz, visitor);
